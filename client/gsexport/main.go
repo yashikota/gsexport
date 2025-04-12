@@ -40,8 +40,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Create directory with title in slides/
-	dirName := fmt.Sprintf("slides/%s", strings.ReplaceAll(data.Title, " ", "_"))
+	// Create directory with title
+	dirName := strings.ReplaceAll(data.Title, " ", "_")
 	if err := os.MkdirAll(dirName, 0755); err != nil {
 		fmt.Printf("Error creating directory: %v\n", err)
 		os.Exit(1)
