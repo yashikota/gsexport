@@ -1,20 +1,58 @@
-import { use, Suspense } from 'react'
+import { use, Suspense, useState } from 'react'
 
-const fetchData = async () => {
-  const data = await fetch('/api')
-  return data.json<{ message: string }>()
+const fetchData = async (url: string) => {
+  const response = await fetch(`/api?url=${encodeURIComponent(url)}`)
+  return response.json()
 }
 
-const Component = ({ promise }: { promise: Promise<{ message: string }> }) => {
+const Component = ({ promise }: { promise: Promise<any> }) => {
   const data = use(promise)
-  return <h2 className="text-2xl">{data.message}</h2>
+  return (
+    <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+      <pre className="whitespace-pre-wrap">{JSON.stringify(data, null, 2)}</pre>
+    </div>
+  )
 }
 
 const App = () => {
+  const [url, setUrl] = useState('')
+  const [promise, setPromise] = useState<Promise<any> | null>(null)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (url) {
+      setPromise(fetchData(url))
+    }
+  }
+
   return (
-    <Suspense fallback={'loading...'}>
-      <Component promise={fetchData()} />
-    </Suspense>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6">Google Slides Exporter</h1>
+
+      <form onSubmit={handleSubmit} className="mb-4">
+        <div className="flex flex-col gap-4">
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="Enter Google Slides URL"
+            className="p-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Fetch Data
+          </button>
+        </div>
+      </form>
+
+      {promise && (
+        <Suspense fallback={<div className="text-center">Loading...</div>}>
+          <Component promise={promise} />
+        </Suspense>
+      )}
+    </div>
   )
 }
 
