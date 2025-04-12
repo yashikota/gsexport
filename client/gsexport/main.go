@@ -18,16 +18,41 @@ type Response struct {
 }
 
 func main() {
+	// Check required environment variables
+	accountID := os.Getenv("ACCOUNT_ID")
+	if accountID == "" {
+		fmt.Println("Error: ACCOUNT_ID environment variable is not set")
+		os.Exit(1)
+	}
+
+	apiToken := os.Getenv("API_TOKEN")
+	if apiToken == "" {
+		fmt.Println("Error: API_TOKEN environment variable is not set")
+		os.Exit(1)
+	}
+
 	if len(os.Args) != 2 {
-		fmt.Println("Usage: gslides-exporter <presentation-url>")
+		fmt.Println("Usage: gsexport <presentation-url>")
 		os.Exit(1)
 	}
 
 	url := os.Args[1]
-	baseURL := "https://gslides-exporter.yashikota.workers.dev/api"
+	baseURL := "https://gsexport.yashikota.workers.dev/api"
+
+	// Create HTTP client with custom headers
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/slide-info?url=%s", baseURL, url), nil)
+	if err != nil {
+		fmt.Printf("Error creating request: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Add headers
+	req.Header.Add("X-Account-ID", accountID)
+	req.Header.Add("X-API-Token", apiToken)
 
 	// Fetch slides information
-	resp, err := http.Get(fmt.Sprintf("%s/fetch-gslides?url=%s", baseURL, url))
+	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("Error fetching slides: %v\n", err)
 		os.Exit(1)
@@ -54,9 +79,19 @@ func main() {
 		// Generate filename with zero-padded index
 		filename := fmt.Sprintf("%s/%03d.png", dirName, i+1)
 
+		// Create request for screenshot
+		req, err := http.NewRequest("GET", fmt.Sprintf("%s/screenshot?url=%s&name=%03d", baseURL, slideURL, i+1), nil)
+		if err != nil {
+			fmt.Printf("Error creating request for slide %d: %v\n", i+1, err)
+			continue
+		}
+
+		// Add headers
+		req.Header.Add("X-Account-ID", accountID)
+		req.Header.Add("X-API-Token", apiToken)
+
 		// Download screenshot
-		screenshotURL := fmt.Sprintf("%s/screenshot?url=%s&name=%03d", baseURL, slideURL, i+1)
-		resp, err := http.Get(screenshotURL)
+		resp, err := client.Do(req)
 		if err != nil {
 			fmt.Printf("Error downloading slide %d: %v\n", i+1, err)
 			continue

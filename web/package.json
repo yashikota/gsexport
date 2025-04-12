@@ -1,5 +1,5 @@
 {
-    "name": "gslides-exporter",
+    "name": "gsexport",
     "private": true,
     "type": "module",
     "scripts": {

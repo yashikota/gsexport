@@ -1,6 +1,6 @@
 {
     "$schema": "node_modules/wrangler/config-schema.json",
-    "name": "gslides-exporter",
+    "name": "gsexport",
     "compatibility_date": "2025-03-20",
     "main": "./src/server/index.tsx",
     "assets": {

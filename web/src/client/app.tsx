@@ -2,7 +2,7 @@ import { Suspense, use, useState } from "react";
 
 const fetchData = async (url: string) => {
 	const response = await fetch(
-		`/api/fetch-gslides?url=${encodeURIComponent(url)}`,
+		`/api/slide-info?url=${encodeURIComponent(url)}`,
 	);
 	return response.json();
 };
@@ -29,8 +29,7 @@ const App = () => {
 
 	return (
 		<div className="container mx-auto p-4">
-			<h1 className="text-3xl font-bold mb-6">Google Slides Exporter</h1>
-
+			<h1 className="text-3xl font-bold mb-6">gsexport</h1>
 			<form onSubmit={handleSubmit} className="mb-4">
 				<div className="flex flex-col gap-4">
 					<input

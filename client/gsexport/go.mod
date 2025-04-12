@@ -1,3 +1,3 @@
-module github.com/yashikota/gslides-exporter/client/gsexport
+module github.com/yashikota/gsexport/client/gsexport
 
 go 1.24.1
