@@ -1,7 +1,7 @@
 import { use, Suspense, useState } from 'react'
 
 const fetchData = async (url: string) => {
-  const response = await fetch(`/api?url=${encodeURIComponent(url)}`)
+  const response = await fetch(`/api/fetch-gslides?url=${encodeURIComponent(url)}`)
   return response.json()
 }
 
