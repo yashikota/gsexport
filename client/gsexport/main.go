@@ -79,7 +79,7 @@ func main() {
 
 		// Add delay between API calls
 		if i < len(data.Slides)-1 {
-			time.Sleep(7 * time.Second)
+			time.Sleep(8 * time.Second)
 		}
 	}
 
