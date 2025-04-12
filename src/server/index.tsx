@@ -30,6 +30,7 @@ app.get('/api/screenshot', async (c) => {
   if (!url) {
     return c.json({ error: 'URL parameter is required' }, 400)
   }
+  const name = c.req.query('name') || 'screenshot'
 
   try {
     const response = await fetch(
@@ -62,7 +63,7 @@ app.get('/api/screenshot', async (c) => {
     return new Response(buffer, {
       headers: {
         'Content-Type': 'image/png',
-        'Content-Disposition': 'attachment; filename="screenshot.png"'
+        'Content-Disposition': `attachment; filename="${name}.png"`
       }
     })
   } catch (error) {
